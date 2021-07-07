@@ -1,0 +1,11 @@
+{
+  "name": "notion-notifier",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Koen Verburg <creativekoen@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@notionhq/client": "^0.1.9",
+    "dotenv": "^10.0.0"
+  }
+}
