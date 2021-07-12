@@ -1,0 +1,29 @@
+name: cron
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 */2 * * *" # run every 3 hours
+
+jobs:
+  runner:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+
+      - name: run
+        env:
+          NOTION_TOKEN: ${{ secrets.BIRTH_YEAR}}
+          NOTION_DATABASE: ${{ secrets.URL }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL}}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL}}
+        run: |
+          yarn install
+          node ./src/index.js
