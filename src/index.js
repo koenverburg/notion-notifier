@@ -1,15 +1,24 @@
 const {config} = require('dotenv')
-const { Client } = require("@notionhq/client")
+const {Client} = require("@notionhq/client")
+const {IncomingWebhook} = require('@slack/webhook')
 
 config()
 
-const pp = v => console.log(JSON.stringify(v, null, 2))
+const webhook = new IncomingWebhook(process.env.SLACK_WEBHOOK_URL)
 
 const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 })
 
-const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const days = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday'
+];
 
 const types = {
   MOST_IMPORTANT_TASKS:   'Most importants Tasks',
@@ -27,8 +36,6 @@ const getDay = (index) => {
 ;(async () => {
   const today = new Date()
   const todayDisplayName = getDay(today.getDay())
-
-  console.log(todayDisplayName)
 
   const page = await notion.databases.query({
     database_id: process.env.NOTION_DATABASE, 
@@ -69,26 +76,29 @@ const getDay = (index) => {
   }
 
   const mostImportantTasks = groupTasks(items, types.MOST_IMPORTANT_TASKS)
-  // console.log(mostImportantTasks)
-
   const secondaryTasks = groupTasks(items, types.SECONDARY_TASKS)
-  // console.log(secondaryTasks)
-
   const additionalTasks = groupTasks(items, types.ADDITIONAL_TASKS)
-  // console.log(additionalTasks)
 
   const msg = `
-You have the follow tasks for today.
+Your daily grind notification to work harder
+---
+You have the follow tasks for today.\n
   Most Important Tasks:
-${mostImportantTasks.map(item => `  - ${item.title} (${item.status})`).join('\n')}
+${mostImportantTasks.map(item => `  - (${item.status}) ${item.title}`).join('\n')}
 
   Secondary Tasks:
-${secondaryTasks.map(item => `  - ${item.title} (${item.status})`).join('\n')}
+${secondaryTasks.map(item => `  - (${item.status}) ${item.title}`).join('\n')}
 
-  Addiation Tasks:
-${additionalTasks.map(item => `  - ${item.title} (${item.status})`).join('\n')}
+  Additional Tasks:
+${additionalTasks.map(item => `  - (${item.status}) ${item.title}`).join('\n')}`
 
-`
-  console.log(msg)
-  // pp(page)
+  await webhook.send({
+    text:      msg,
+    channel:   process.env.SLACK_CHANNEL,
+    username:  'Keep on track Notifier',
+    icon_url:  'https://github.com/koenverburg.png?size=48'
+    // msg:       'Your daily grind notification to work harder',
+    // footer:    'Keep going!!',
+  })
+
 })()
