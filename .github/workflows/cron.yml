@@ -20,10 +20,10 @@ jobs:
 
       - name: run
         env:
-          NOTION_TOKEN: ${{ secrets.BIRTH_YEAR}}
-          NOTION_DATABASE: ${{ secrets.URL }}
-          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL}}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL}}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE: ${{ secrets.DATABASE }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           yarn install
           node ./src/index.js
