@@ -2,11 +2,11 @@ name: cron
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-  schedule:
-    - cron: "0 */2 * * *" # run every 3 hours
+  # push:
+  #   branches:
+  #     - main
+  # schedule:
+  #   - cron: "0 */2 * * *" # run every 3 hours
 
 jobs:
   runner:
